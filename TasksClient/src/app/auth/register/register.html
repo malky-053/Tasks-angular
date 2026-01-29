@@ -1,0 +1,56 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <h2>צור חשבון חדש</h2>
+    <p class="subtitle">הצטרף לניהול המשימות של הצוות שלך</p>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label>שם משתמש</label>
+        <input type="text" formControlName="name" placeholder="הכנס שם מלא"
+          [class.error]="registerForm.get('name')?.touched && registerForm.get('name')?.invalid">
+        @if (registerForm.get('name')?.touched && registerForm.get('name')?.errors?.['required']) {
+        <small class="error-text">שדה חובה</small>
+        }
+        @if (registerForm.get('name')?.touched && registerForm.get('name')?.errors?.['minlength']) {
+        <small class="error-text">השם חייב להכיל לפחות 2 תווים</small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label>אימייל</label>
+        <input type="email" formControlName="email" placeholder="email@example.com"
+          [class.error]="registerForm.get('email')?.touched && registerForm.get('email')?.invalid">
+        @if (registerForm.get('email')?.touched && registerForm.get('email')?.errors?.['required']) {
+        <small class="error-text">שדה חובה</small>
+        }
+        @if (registerForm.get('email')?.touched && registerForm.get('email')?.errors?.['email']) {
+        <small class="error-text">אימייל לא תקין</small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label>סיסמה</label>
+        <input type="password" formControlName="password" placeholder="לפחות 6 תווים"
+          [class.error]="registerForm.get('password')?.touched && registerForm.get('password')?.invalid">
+        @if (registerForm.get('password')?.touched && registerForm.get('password')?.errors?.['required']) {
+        <small class="error-text">שדה חובה</small>
+        }
+        @if (registerForm.get('password')?.touched && registerForm.get('password')?.errors?.['minlength']) {
+        <small class="error-text">הסיסמה חייבת להכיל לפחות 6 תווים</small>
+        }
+      </div>
+
+      @if (errorMessage()) {
+      <div class="error-msg">{{ errorMessage() }}</div>
+      }
+
+      <button type="submit" [disabled]="registerForm.invalid || isLoading()">
+        {{ isLoading() ? 'רושם אותך...' : 'הרשמה' }}
+      </button>
+    </form>
+
+    <p class="footer-text">
+      כבר יש לך חשבון? <a routerLink="/auth/login">התחבר כאן</a>
+    </p>
+  </div>
+</div>

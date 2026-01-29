@@ -1,0 +1,11 @@
+<app-header></app-header>
+
+<div class="main-content">
+  <router-outlet></router-outlet>
+</div>
+
+@if (toast.message()) {
+<div class="toast" [class]="toast.type()">
+    {{ toast.message() }}
+</div>
+}

@@ -1,0 +1,42 @@
+<div class="projects-container">
+    <div class="header">
+        <div class="breadcrumb">
+            <a routerLink="/teams">צוותים</a> / <span>פרויקטים</span>
+        </div>
+        <button class="btn-create" (click)="showModal.set(true)">+ פרויקט חדש</button>
+    </div>
+
+    @if (isLoading()) {
+    <div class="loader">טוען פרויקטים...</div>
+    } @else {
+    <div class="search-container">
+        <input type="text" placeholder="🔍 חפש פרויקטים..." [(ngModel)]="searchQuery" class="search-input">
+    </div>
+    <div class="projects-grid">
+        @for (project of filteredProjects(); track project.id) {
+        <div class="project-card" (click)="openTasks(project.id ?? 0)">
+            <div class="project-info">
+                <h3>{{ project.name }}</h3>
+                <p>נוצר ב: {{ project.created_at | date:'dd/MM/yyyy' }}</p>
+            </div>
+            <div class="arrow">←</div>
+        </div>
+        } @empty {
+        <div class="empty-state">
+            <p>אין עדיין פרויקטים בצוות זה.</p>
+            <button (click)="showModal.set(true)">צור פרויקט ראשון</button>
+        </div>
+        }
+    </div>
+    }
+
+    @if (showModal()) {
+    <div class="modal-overlay" (click)="showModal.set(false)">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+            <app-project-create [teamId]="currentTeamId()!" (projectCreated)="onProjectCreated()"
+                (cancel)="showModal.set(false)">
+            </app-project-create>
+        </div>
+    </div>
+    }
+</div>

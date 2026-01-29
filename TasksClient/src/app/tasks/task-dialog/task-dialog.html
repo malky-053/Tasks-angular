@@ -1,0 +1,85 @@
+<div class="modal-overlay" (click)="closed.emit()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <header>
+            <h2>{{ taskToEdit() ? 'עריכת משימה' : 'משימה חדשה' }}</h2>
+            <button class="btn-close" (click)="closed.emit()">×</button>
+        </header>
+
+        <div class="form-body">
+            <div class="form-group">
+                <label>כותרת</label>
+                <input type="text" [ngModel]="title()" (ngModelChange)="title.set($event)"
+                    placeholder="מה צריך לעשות?" />
+            </div>
+
+            <div class="form-group">
+                <label>תיאור</label>
+                <textarea [ngModel]="description()" (ngModelChange)="description.set($event)"
+                    placeholder="פירוט נוסף..." rows="2"></textarea>
+            </div>
+
+            @if (taskToEdit()?.id) {
+            <div class="form-group">
+                <label>סטטוס</label>
+                <select [ngModel]="status()" (ngModelChange)="status.set($event)" name="status">
+                    <option value="todo">לביצוע</option>
+                    <option value="in-progress">בעבודה</option>
+                    <option value="done">הושלם</option>
+                </select>
+            </div>
+            } @else {
+            <div class="status-preview">
+                סטטוס: <strong>{{ getStatusLabel() }}</strong>
+            </div>
+            <div class="form-group">
+                <label>עדיפות</label>
+                <div class="priority-selector">
+                    <button type="button" [class.active]="priority() === 'low'"
+                        (click)="priority.set('low')">נמוכה</button>
+                    <button type="button" [class.active]="priority() === 'normal'"
+                        (click)="priority.set('normal')">רגילה</button>
+                    <button type="button" [class.active]="priority() === 'high'"
+                        (click)="priority.set('high')">גבוהה</button>
+                </div>
+            </div>
+            }
+            @if (taskToEdit()?.id) {
+
+            <div class="comments-section">
+                <h3>תגובות</h3>
+
+                <div class="add-comment">
+                    <textarea [ngModel]="newCommentBody()" (ngModelChange)="newCommentBody.set($event)"
+                        placeholder="כתוב תגובה חדשה...">
+                    </textarea>
+                    <button class="btn-send" (click)="submitComment()" [disabled]="!newCommentBody().trim()">
+                        שלח תגובה
+                    </button>
+                </div>
+
+                <div class="comments-list">
+                    @if (isLoadingComments()) {
+                    <div class="loader-sm">טוען תגובות...</div>
+                    } @else {
+                    @for (c of comments(); track c.id) {
+                    <div class="comment-card">
+                        <p class="comment-body">{{ c.body }}</p>
+                        <span class="comment-date">{{ c.created_at | date:'dd/MM/yyyy HH:mm' }}</span>
+                    </div>
+                    } @empty {
+                    <p class="no-comments">אין תגובות למשימה זו.</p>
+                    }
+                    }
+                </div>
+            </div>
+            }
+        </div>
+
+        <footer>
+            <button class="btn-secondary" (click)="closed.emit()">ביטול</button>
+            <button class="btn-primary" [disabled]="!title() || isSaving()" (click)="save()">
+                {{ isSaving() ? 'שומר...' : 'שמור משימה' }}
+            </button>
+        </footer>
+    </div>
+</div>

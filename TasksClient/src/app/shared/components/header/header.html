@@ -1,0 +1,23 @@
+<header class="main-header">
+    <div class="header-left">
+        <span class="logo">Task Manager</span>
+        
+        @if (isLoggedIn()) {
+        <nav class="nav-links">
+            <a routerLink="/projects" routerLinkActive="active">פרויקטים</a>
+            <a routerLink="/teams" routerLinkActive="active">צוותים</a>
+        </nav>
+        }
+    </div>
+
+    @if (isLoggedIn()) {
+    <div class="header-right">
+        <div class="user-info">
+            <span class="user-name">👤 {{ userName() }}</span>
+            <button class="logout-btn" (click)="onLogout()" title="התנתקות">
+                 התנתקות
+            </button>
+        </div>
+    </div>
+    }
+</header>

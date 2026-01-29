@@ -1,0 +1,27 @@
+<div class="form-container">
+    <div class="form-group">
+        <label for="teamName">שם הצוות</label>
+        <input id="teamName" type="text" placeholder="לדוגמה: צוות פיתוח Backend" [ngModel]="teamName()"
+            (ngModelChange)="teamName.set($event)" [disabled]="isSubmitting()" (keyup.enter)="onSubmit()"
+            class="form-input" />
+    </div>
+
+    @if (errorMessage()) {
+    <div class="error-msg">
+        {{ errorMessage() }}
+    </div>
+    }
+
+    <div class="form-actions">
+        <button class="btn-secondary" (click)="onCancel()" [disabled]="isSubmitting()">
+            ביטול
+        </button>
+        <button class="btn-submit" (click)="onSubmit()" [disabled]="isSubmitting() || !teamName()">
+            @if (isSubmitting()) {
+            <span class="spinner"></span>
+            } @else {
+            צור צוות
+            }
+        </button>
+    </div>
+</div>

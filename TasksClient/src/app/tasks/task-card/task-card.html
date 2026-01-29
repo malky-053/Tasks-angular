@@ -1,0 +1,56 @@
+<div class="card" (click)="onCardClick()">
+    <div class="card-content">
+        <h4 class="task-title">{{ task().title }}</h4>
+        @if (task().description) {
+        <p class="task-desc">{{ task().description }}</p>
+        }
+
+        <div class="actions">
+            @if (task().status !== 'done') {
+            <button class="btn-done" (click)="markAsDone($event)" title="סיימתי!">✓</button>
+            }
+            @if (!confirmDelete()) {
+            <button class="btn-delete" (click)="askToDelete($event)">🗑️</button>
+            } @else {
+            <div class="delete-confirmation" (click)="$event.stopPropagation()">
+                <span>בטוח?</span>
+                <button class="btn-confirm" (click)="onDelete($event)">כן</button>
+                <button class="btn-cancel" (click)="confirmDelete.set(false)">לא</button>
+            </div>
+            }
+        </div>
+    </div>
+
+    <div class="card-footer task-badges">
+        <span class="badge" [class]="getPriorityClass()">
+            priority: {{ task().priority }}
+        </span>
+
+        <span class="badge" [class]="getStatusClass()">
+            status: {{ task().status }}
+        </span>
+
+        <button class="btn-comments-toggle" (click)="toggleComments($event)">
+            💬 {{ showComments() ? 'סגור' : 'תגובות' }}
+        </button>
+    </div>
+
+    @if (showComments()) {
+    <div class="card-comments-area" (click)="$event.stopPropagation()">
+        <hr />
+        @if (isLoading()) {
+        <p class="loading-text">טוען תגובות...</p>
+        } @else {
+        <div class="mini-comments-list">
+            @for (c of comments(); track c.id) {
+            <div class="mini-comment">
+                <span class="comment-text">{{ c.body }}</span>
+            </div>
+            } @empty {
+            <p class="no-comments-text">אין תגובות למשימה זו</p>
+            }
+        </div>
+        }
+    </div>
+    }
+</div>

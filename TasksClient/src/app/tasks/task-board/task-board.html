@@ -1,0 +1,110 @@
+<div class="board-wrapper">
+    <div class="board-top-bar">
+        <div class="board-title-section">
+            <button class="btn-back" (click)="goBackToProjects()" title="חזור לפרויקטים">
+                ← חזור
+            </button>
+            <h1>לוח משימות - {{ projectName() }}</h1>
+        </div>
+        <button class="btn-primary" (click)="openCreateDialog()">+ משימה חדשה</button>
+    </div>
+
+    <div class="search-container">
+        <input type="text" placeholder="🔍 חפש משימות..." [(ngModel)]="searchQuery" class="search-input">
+    </div>
+
+    @if (isLoading()) {
+    <div class="loader-container">
+        <div class="spinner"></div>
+        <p>טוען נתונים...</p>
+    </div>
+    } @else {
+
+    <div class="kanban-grid" cdkDropListGroup>
+
+        <section class="kanban-column">
+            <div class="column-header">
+                <div class="status-indicator todo"></div>
+                <h2>לביצוע</h2>
+                <span class="count-badge">{{ todoTasks().length }}</span>
+                <button class="btn-sort-priority" (click)="toggleSortByPriority('todo')"
+                    [class.active]="sortByPriority()['todo']" title="מיון לפי עדיפות">⬇️</button>
+            </div>
+
+            <div class="column-content" cdkDropList [cdkDropListData]="todoTasks()"
+                (cdkDropListDropped)="onTaskDropped($event, 'todo')">
+                <button class="btn-add-inline" (click)="openCreateDialog('todo')">
+                    + הוסף משימה
+                </button>
+                @for (item of todoTasks(); track item.id) {
+                <div class="draggable-item-wrapper" cdkDrag [cdkDragData]="item">
+                    <app-task-card [task]="item" (taskClicked)="openEditDialog($event)"></app-task-card>
+                    <div *cdkDragPlaceholder class="custom-placeholder"></div>
+                </div>
+                }
+
+
+            </div>
+        </section>
+
+        <section class="kanban-column">
+            <div class="column-header">
+                <div class="status-indicator progress"></div>
+                <h2>בעבודה</h2>
+                <span class="count-badge">{{ inProgressTasks().length }}</span>
+                <button class="btn-sort-priority" (click)="toggleSortByPriority('in-progress')"
+                    [class.active]="sortByPriority()['in-progress']" title="מיון לפי עדיפות">⬇️</button>
+            </div>
+
+            <div class="column-content" cdkDropList [cdkDropListData]="inProgressTasks()"
+                (cdkDropListDropped)="onTaskDropped($event, 'in-progress')">
+
+                <button class="btn-add-inline" (click)="openCreateDialog('in-progress')">
+                    + הוסף משימה
+                </button>
+
+                @for (item of inProgressTasks(); track item.id) {
+                <div class="draggable-item-wrapper" cdkDrag [cdkDragData]="item">
+                    <app-task-card [task]="item" (taskClicked)="openEditDialog($event)"></app-task-card>
+                    <div *cdkDragPlaceholder class="custom-placeholder"></div>
+                </div>
+                }
+            </div>
+        </section>
+
+        <section class="kanban-column">
+            <div class="column-header">
+                <div class="status-indicator done"></div>
+                <h2>הושלם</h2>
+                <span class="count-badge">{{ doneTasks().length }}</span>
+                <button class="btn-sort-priority" (click)="toggleSortByPriority('done')"
+                    [class.active]="sortByPriority()['done']" title="מיון לפי עדיפות">⬇️</button>
+            </div>
+
+            <div class="column-content" cdkDropList [cdkDropListData]="doneTasks()"
+                (cdkDropListDropped)="onTaskDropped($event, 'done')">
+
+                <button class="btn-add-inline" (click)="openCreateDialog('done')">
+                    + הוסף משימה
+                </button>
+
+                @for (item of doneTasks(); track item.id) {
+                <div class="draggable-item-wrapper" cdkDrag [cdkDragData]="item">
+                    <app-task-card [task]="item" (taskClicked)="openEditDialog($event)"></app-task-card>
+                    <div *cdkDragPlaceholder class="custom-placeholder"></div>
+                </div>
+                }
+
+
+            </div>
+        </section>
+
+    </div>
+    }
+
+    @if (showDialog()) {
+    <app-task-dialog [projectId]="projectId()!" [taskToEdit]="selectedTask()" [initialStatus]="initialStatus()"
+        (closed)="showDialog.set(false)" (saved)="onTaskSaved()">
+    </app-task-dialog>
+    }
+</div>

@@ -1,0 +1,45 @@
+<div class="teams-container">
+    <div class="header">
+        <h1>הצוותים שלי</h1>
+        <button class="btn-create" (click)="openCreateModal()">
+            + צוות חדש
+        </button>
+    </div>
+
+    <div class="search-container">
+        <input type="text" placeholder="🔍 חפש צוותים..." [(ngModel)]="searchQuery" class="search-input">
+    </div>
+
+    @if (isLoading()) {
+    <div class="loader">טוען צוותים...</div>
+    } @else {
+    <div class="teams-grid">
+        @for (team of filteredTeams(); track team.id) {
+        <div class="team-card">
+            <div class="team-icon">{{ team.name.charAt(0).toUpperCase() }}</div>
+            <h3>{{ team.name }}</h3>
+            <p>{{ team.members_count || 0 }} חברים</p>
+            <button (click)="viewProjects(team.id||0)">צפה בפרויקטים</button>
+        </div>
+        } @empty {
+        <div class="empty-state">
+            <p>עדיין לא הצטרפת לאף צוות.</p>
+            <button (click)="openCreateModal()">צור את הצוות הראשון שלך!</button>
+        </div>
+        }
+    </div>
+    }
+
+    @if (showModal()) {
+    <div class="modal-overlay" (click)="closeModal()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>יצירת צוות חדש</h2>
+                <button class="btn-close" (click)="closeModal()">×</button>
+            </div>
+            <app-team-create (teamCreated)="onTeamCreated()" (cancel)="closeModal()">
+            </app-team-create>
+        </div>
+    </div>
+    }
+</div>
