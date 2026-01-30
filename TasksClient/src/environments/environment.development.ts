@@ -1,4 +1,4 @@
 export const environment = {
     production: false,
-    apiUrl: 'http://localhost:3000'
+    apiUrl: 'https://tasks-angular-3.onrender.com'
 };
